@@ -1,0 +1,23 @@
+{
+  "name": "chat2dsh",
+  "version": "0.1.0",
+  "description": "Bridge ChatGPT (or any MCP client) to a local DeepSeek Harness agent. Chat thinks, DSH executes.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "bin": {
+    "chat2dsh": "src/server.mjs"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/server.mjs --http",
+    "stdio": "node --env-file-if-exists=.env src/server.mjs --stdio",
+    "verify": "node scripts/verify.mjs",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "zod": "^3.25.76"
+  }
+}
