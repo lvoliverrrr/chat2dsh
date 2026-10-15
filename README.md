@@ -48,6 +48,10 @@ cp .env.example .env
 node -e "console.log(require('crypto').randomBytes(24).toString('hex'))"   # 填进 CHAT2DSH_TOKEN
 # 再把 CHAT2DSH_ROOTS 改成你要让 agent 干活的项目目录
 
+# 3.5 填 DSH 的 key
+# 打开 .env，把 DEEPSEEK_API_KEY= 那行取消注释填上。不填也能跑，但 dsh_run 会返回
+# MISSING_CREDENTIAL —— 桥是好的，只是 dsh 没有模型可用。
+
 # 4. 起服务（HTTP 模式）
 npm start
 # [chat2dsh] v0.1.0 listening on http://127.0.0.1:7317/mcp
