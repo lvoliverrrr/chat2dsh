@@ -28,6 +28,8 @@ DeepSeek Harness (dsh headless)         ← 执行层：读改文件、跑命令
 
 **如果目标就是 ChatGPT 网页版遥控本机，用路线 A**，见 [`docs/chatgpt-setup.md`](docs/chatgpt-setup.md)（含 Tunnel、Workspace、DSH 接入的完整步骤和踩坑清单）。本仓库的代码不是那条路的必需品。
 
+**不想自己啃文档？** 把 [`docs/agent-prompt.md`](docs/agent-prompt.md) 里那段提示词整段发给一个 AI（ChatGPT、Claude 都行），它会先问你几个问题，然后一个阶段一个阶段带你配，每步都告诉你验收标准。那是这份 README 的口语版。
+
 **路线 B 的限制，先说清楚**：ChatGPT 的自定义 MCP 服务器只接受 HTTPS + OAuth 或「无认证」两种方式，没有地方填 Bearer token。所以本仓库这个桥直接挂到 ChatGPT 上，要么走无认证的公网隧道（谁拿到 URL 谁能执行你电脑上的代码），要么你自己在前面补一层 OAuth。两种情况都不该按默认做法用。**它真正的用途是给本机或局域网里的 MCP 客户端当 dsh 适配器**，以及当你要自己实现一个带 OAuth 的 ChatGPT 网关时，作为被包在里面的那一层。
 
 ---
@@ -213,7 +215,8 @@ chat2dsh/
 ├── scripts/
 │   └── smoke.mjs    端到端自检（真起进程、真握手）
 ├── docs/
-│   └── chatgpt-setup.md  路线 A：ChatGPT 网页版 + Codex Bridge 完整配置
+│   ├── chatgpt-setup.md  路线 A：ChatGPT 网页版 + Codex Bridge 完整配置
+│   └── agent-prompt.md   交给 AI 的部署任务书（让它带你一步步配）
 ├── .env.example
 └── package.json
 ```
