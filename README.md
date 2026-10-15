@@ -39,7 +39,7 @@ DeepSeek Harness (dsh headless)         ← 执行层：读改文件、跑命令
 npm install -g @deepseek-ai/dsh
 
 # 2. 装本仓库
-git clone https://github.com/<you>/chat2dsh.git
+git clone https://github.com/lvoliverrrr/chat2dsh.git
 cd chat2dsh
 npm install
 
@@ -170,6 +170,21 @@ data: {"result":{"tools":[{"name":"dsh_health",...},{"name":"dsh_run",...}]}}
 **唯一没跑的是带 API Key 的真实模型调用**——那一步需要你自己的 key，`npm run smoke -- --with-run` 一跑就见分晓。
 
 ---
+
+## 暴露到公网（可选，先读下面「安全」那节）
+
+```bash
+# 临时域名，不用注册账号
+cloudflared tunnel --url http://127.0.0.1:7317
+# 它会打印 https://<random>.trycloudflare.com
+# 你的 MCP 端点就是它后面加 /mcp
+```
+
+三件事先知道：
+
+- 这个域名**每次重启都变**，而且没有可用性保证。要稳定域名用命名隧道，要接 ChatGPT 就用官方 Secure MCP Tunnel。
+- **本机 DNS 可能根本解析不了 `*.trycloudflare.com`。** 实测某校园网 DNS 直接返回 Non-existent domain，换 `223.5.5.5` 才解析到 Cloudflare 边缘 IP，再用 `curl --resolve host:443:IP` 才通。排障时先单独验 DNS 这一层，别把它当成隧道没起来。
+- 公网暴露意味着**谁拿到 URL 又拿到 token，谁就能在这台机器上执行代码**。只给信任的人，用完就关。
 
 ## 安全
 
