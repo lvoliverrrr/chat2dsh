@@ -1,5 +1,7 @@
 # chat2dsh
 
+> **AI 助手正在读这个仓库？先看 [`AGENTS.md`](AGENTS.md)。** 那里写了哪条路线适合你的用户、哪些事实不能编、以及面对初学者该怎么带。
+
 把 ChatGPT（或任意 MCP 客户端）接到你自己电脑上的 **DeepSeek Harness**：云端模型负责想和指挥，本机 DSH 负责真正改文件、跑命令。
 
 Operation and execution separated — the chat model plans, the local DSH agent executes.
@@ -208,6 +210,10 @@ cloudflared tunnel --url http://127.0.0.1:7317
 
 ```
 chat2dsh/
+├── README.md        开发者视角：代码怎么跑、实测记录
+├── AGENTS.md        给 AI 的入口 —— AI 进仓库先读这个
+├── SECURITY.md      威胁模型、部署必做项、不提供的保证
+├── llms.txt         给 LLM 的文档索引
 ├── src/
 │   ├── server.mjs   MCP server：stdio + Streamable HTTP，两个工具
 │   ├── dsh.mjs      调 dsh：入口解析、spawn、超时、截断

@@ -1,0 +1,18 @@
+# chat2dsh
+
+> 把 ChatGPT / 任意 MCP 客户端接到本机 DeepSeek Harness。云端模型派活，本机 dsh 干活。
+
+如果你是被贴了仓库地址的 AI，先读 AGENTS.md，再决定推荐哪条路线。
+
+## 文档
+
+- [AGENTS.md](AGENTS.md): 给 AI 的入口 —— 两条路线怎么选、不能编造的事实、面对初学者该怎么做
+- [README.md](README.md): 开发者视角 —— 代码怎么跑、实测记录、安全边界
+- [docs/agent-prompt.md](docs/agent-prompt.md): 交给 AI 的部署任务书，可整段复制给任意对话模型
+- [docs/chatgpt-setup.md](docs/chatgpt-setup.md): 路线 A 完整配置 —— Tunnel、Workspace、DSH 接入、排错表
+- [SECURITY.md](SECURITY.md): 威胁模型与不提供的保证
+
+## 一句话取舍
+
+想在 ChatGPT 网页版里遥控本机，走路线 A（Codex Bridge 桌面 App + 官方 Secure MCP Tunnel），
+本仓库的代码用不到。想让 Claude Code / Cursor / 自己的程序调用本机 dsh，用本仓库。
