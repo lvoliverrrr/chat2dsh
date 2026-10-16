@@ -68,7 +68,10 @@ npm run smoke             # 握手 + tools/list + dsh_health + 越界拦截
 npm run smoke -- --with-run   # 再加一次真实 dsh 任务（要花一次模型调用）
 ```
 
-`dsh` 执行本身需要 API Key。用官方的：`platform.deepseek.com/api_keys` 拿 key，填在 DSH Web 的 Models 页（写进 `~/.dsh/.credentials.yaml`），或者直接作为环境变量 `DEEPSEEK_API_KEY` 传给本桥。
+`dsh` 执行需要一个模型来源，两条路随便挑一条：
+
+- **不要 key、不花钱**：让 DSH 指向本机跑的 OpenAI 兼容端点（koboldcpp / llama.cpp / Ollama 都行）。配置方式和实测数字见 [`docs/local-model.md`](docs/local-model.md)。
+- **官方 API**：`platform.deepseek.com/api_keys` 拿 key，填在 DSH Web 的 Models 页（写进 `~/.dsh/.credentials.yaml`），或者直接作为环境变量 `DEEPSEEK_API_KEY` 传给本桥。
 
 ---
 
@@ -154,6 +157,33 @@ store DEEPSEEK_API_KEY through the credentials service (the web Models page writ
 or export DEEPSEEK_API_KEY in the launching environment
 ```
 
+后来把 provider 换成本机模型（koboldcpp + Qwen2.5-7B，零 key）之后，同一条命令 6 秒返回真答案：
+
+```
+$ dsh --profile headless --json "Reply with exactly this text and nothing else: LOCAL MODEL OK"
+{"type":"text","text":"OK"}
+{"type":"status","phase":"step_end","usage":{"inputTokens":3446,"outputTokens":40,"totalTokens":3486}}
+{"type":"status","phase":"turn_end","reason":{"kind":"completed"}}
+{"type":"final","text":"OK"}
+```
+
+带真实任务的完整自检（`--with-run`）：
+
+```
+PASS  server boots and binds loopback — bridge 0.1.0, dsh 0.2.0-rc.2
+PASS  dsh is reachable from the bridge process — resolved
+PASS  unauthenticated request is rejected — HTTP 401
+PASS  MCP handshake over Streamable HTTP — session 9e9b00e8
+PASS  tools/list returns the bridge surface — dsh_health, dsh_run
+PASS  dsh_health reports a real dsh runtime — dsh 0.2.0-rc.2 @ .../@deepseek-ai/dsh/lib/bin.js
+PASS  dsh_run refuses a cwd outside the roots — cwd "..." is outside the allowed roots
+PASS  dsh_run executed a real task through the bridge — exit=0 in 6.15s
+
+8/8 checks passed
+```
+
+最后这条是整条链路一起过的：**MCP 客户端 → 本桥 → dsh headless → 本机 koboldcpp → 7B 生成 → 原路返回**。
+
 **公网链路**（同一台机器，`cloudflared tunnel --url http://127.0.0.1:7317`，quick tunnel）：
 
 ```
@@ -175,7 +205,7 @@ data: {"result":{"tools":[{"name":"dsh_health",...},{"name":"dsh_run",...}]}}
 或者干脆走官方 Secure MCP Tunnel。
 
 三件事说清楚了：**桥接层、dsh 进程链路、公网可达性都真跑过**；
-**唯一没跑的是带 API Key 的真实模型调用**——那一步需要你自己的 key，`npm run smoke -- --with-run` 一跑就见分晓。
+**带真实任务的完整自检也过了**——而且用的是本机模型，全程没有任何 API Key。
 
 ---
 
@@ -222,6 +252,7 @@ chat2dsh/
 │   └── smoke.mjs    端到端自检（真起进程、真握手）
 ├── docs/
 │   ├── chatgpt-setup.md  路线 A：ChatGPT 网页版 + Codex Bridge 完整配置
+│   ├── local-model.md    不用 API Key：把 DSH 接到本机 OpenAI 兼容端点
 │   └── agent-prompt.md   交给 AI 的部署任务书（让它带你一步步配）
 ├── .env.example
 └── package.json
