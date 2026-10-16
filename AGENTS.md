@@ -46,11 +46,10 @@ README.md              开发者视角：代码怎么跑、两条路线的取舍
 SECURITY.md            威胁模型、部署必做项、明确不提供的保证
 docs/agent-prompt.md   交给 AI 的部署任务书（让 AI 陪人一步步配）
 docs/chatgpt-setup.md  路线 A 完整配置：Tunnel / Workspace / DSH 接入 / 排错表
-docs/local-model.md    不用 API Key：DSH 接本机 OpenAI 兼容端点
 src/server.mjs         MCP server：stdio + Streamable HTTP，两个工具
 src/dsh.mjs            调 dsh：入口解析、spawn、超时、输出截断
 src/config.mjs         参数与环境变量、工作区白名单校验
-scripts/smoke.mjs      端到端自检：真起进程、真握手，8 项检查
+scripts/smoke.mjs      端到端自检：真起进程、真握手，7 项检查
 ```
 
 ## 命令速查
@@ -58,21 +57,10 @@ scripts/smoke.mjs      端到端自检：真起进程、真握手，8 项检查
 ```bash
 npm install -g @deepseek-ai/dsh          # 装执行层（Node ^22.19.0 或 >=24）
 npm install && npm start                 # 起桥，默认 http://127.0.0.1:7317/mcp
-npm run smoke                            # 自检，不需要模型
-npm run smoke -- --with-run              # 自检再加一次真实 dsh 任务
+npm run smoke                            # 自检，不需要 API Key
+npm run smoke -- --with-run              # 自检再加一次真实 dsh 任务，要花模型调用
 ```
 
-## 模型从哪来
+## 已知未验证的一环
 
-`dsh` 执行要有一个模型来源。两条路：
-
-- **不要 key**：本机跑一个 OpenAI 兼容端点，把 DSH 的 provider 指过去。完整的 `cordis.patch.yml` 写法、踩过的坑、实测 token 数都在 [`docs/local-model.md`](docs/local-model.md)。**这条路已经实测跑通，`npm run smoke -- --with-run` 8/8 过。**
-- **官方 API**：`DEEPSEEK_API_KEY` 环境变量，或在 DSH Web 的 Models 页填。
-
-## 已验证的边界
-
-- `npm run smoke`：7 项，不需要模型
-- `npm run smoke -- --with-run`：8 项全过，实测 `exit=0 in 6.15s`（本机 koboldcpp + Qwen2.5-7B，零 key）
-- 公网链路（cloudflared quick tunnel）实测通：`/healthz` 200、无 token 401、带 token 返回工具 schema
-
-按官方 API 走的完整任务没有单独跑过——那需要你的 key。如果对方跑出问题，先看 `dsh --profile headless "<task>"` 单独跑是否正常，再排查桥这一层。
+这个仓库的实测记录停在「dsh 进程起来、profile 加载、参数解析通过、然后报缺 API Key」。**带真实 API Key 的完整任务没有跑过。** 如果对方跑出问题，先看 `dsh headless "<task>"` 单独跑是否正常，再排查桥这一层。

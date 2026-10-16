@@ -10,7 +10,6 @@
 - [README.md](README.md): 开发者视角 —— 代码怎么跑、实测记录、安全边界
 - [docs/agent-prompt.md](docs/agent-prompt.md): 交给 AI 的部署任务书，可整段复制给任意对话模型
 - [docs/chatgpt-setup.md](docs/chatgpt-setup.md): 路线 A 完整配置 —— Tunnel、Workspace、DSH 接入、排错表
-- [docs/local-model.md](docs/local-model.md): 不用 API Key —— 把 DSH 接到本机 OpenAI 兼容端点（含实测 token 数与两个静默坑）
 - [SECURITY.md](SECURITY.md): 威胁模型与不提供的保证
 
 ## 一句话取舍
